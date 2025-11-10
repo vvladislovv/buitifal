@@ -16,25 +16,19 @@ export default function MastersPage() {
     // Загружаем данные
     const loadMasters = () => {
       try {
-        // Принудительно инициализируем данные если их нет
         if (typeof window !== "undefined") {
-          const stored = localStorage.getItem("beauty_salon_masters");
-          if (!stored) {
-            // Если данных нет, инициализируем их
-            const defaultMasters = storage.getMasters();
-            localStorage.setItem("beauty_salon_masters", JSON.stringify(defaultMasters));
-            setMasters(defaultMasters);
-          } else {
-            const mastersData = storage.getMasters();
-            setMasters(mastersData);
-          }
+          const mastersData = storage.getMasters();
+          setMasters(mastersData || []);
+        } else {
+          // Для SSR используем пустой массив, данные загрузятся на клиенте
+          setMasters([]);
         }
       } catch (error) {
         console.error("Error loading masters:", error);
         // Если ошибка, загружаем дефолтные данные
         try {
           const defaultMasters = storage.getMasters();
-          setMasters(defaultMasters);
+          setMasters(defaultMasters || []);
         } catch (e) {
           setMasters([]);
         }
